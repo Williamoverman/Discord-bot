@@ -1,0 +1,98 @@
+{
+    "data" : [{
+        "perks" : {
+            "activePerkArr" : ["Beast Master", "Berzerker", "Dash", "Field Medic", "Heightened Senses", "Hover Boots", "Iron Will", "See you in Hell", "Shield Link"],
+            "passivePerkArr" : ["Born Ready", "Deep Pockets", "Elemental Insulation", "Friendly", "Resupplier", "Second Wind", "Strong Arm", "Sweet Tooth", "Thorns", "Unstoppable", "Vampire", "Veteran Depositor"]
+        },
+        "class" : {
+            "gunner" : {
+                "primary" : {
+                    "'Lead Storm' Powered Minigun" : {
+                        "modifications" : {
+                            "tier1" : ["Magnetic Refrigeration", "Improved Motor", "Improved Platform Stability"],
+                            "tier2" : ["Oversized Drum", "High Velocity Rounds"],
+                            "tier3" : ["Hardened Rounds", "Improved Stun", "Blowthrough Rounds"],
+                            "tier4" : ["Variable Chamber Pressure", "Lighter Barrel Assembly", "Magnetic Bearings"],
+                            "tier5" : ["Aggressive Venting", "Cold As The Grave", "Hot Bullets"]
+                        },
+                        "overclock" : ["A Little More Oomph!", "Thinned Drum Walls", "Burning Hell", "Compact Feed Mechanism", "Exhaust Vectoring", "Bullet Hell", "Lead Storm"]
+                    },
+                    "'Thunderhead' Heavy Autocannon" : {
+                        "modifications" : {
+                            "tier1" : ["Increased Caliber Rounds", "High Capacity Magazine", "Expanded Ammo Bags"],
+                            "tier2" : ["Tighter Barrel Alignment", "Improved Gas System", "Lighter Barrel Assembly"],
+                            "tier3" : ["Supercharged Feed Mechanism", "Loaded Rounds", "High Velocity Rounds"],
+                            "tier4" : ["Hardened Rounds", "Shrapnel Rounds"],
+                            "tier5" : ["Feedback Loop", "Suppressive Fire", "Damage Resistance At Full RoF"]
+                        },
+                        "overclock": ["Composite Drums", "Splintering Shells", "Carpet Bomber", "Combat Mobility", "Big Bertha", "Neurotoxin Payload"]
+                    },
+                    "'Hurricane' Guided Rocket System" : {
+                        "modifications" : {
+                            "tier1" : ["Missile Belt", "Pressurized Gas Cylinders", "Increased Blast Radius"],
+                            "tier2" : ["Bigger Jet Engine", "Anti-Tank Missiles"],
+                            "tier3" : ["Nano Missles", "Improved Feed Mechanism"],
+                            "tier4" : ["Shrapnel Load", "Zip Fuel"],
+                            "tier5" : ["Napalm-Infused Rounds", "Uncontrolled Decompression", "Nitroglycerin Rounds"]
+                        },
+                        "overclock": ["Manual Guidance Cutoff", "Overtuned Feed Mechanism", "Fragmentation Missiles", "Plasma Burster Missiles", "Minelayer System", "Jet Fuel Homebrew", "Salvo Module"]
+                    }
+                },
+                "secondary" : {
+                    "'Bulldog' Heavy Revolver" : {
+                        "tier1" : ["Quickfire Ejector", "Perfect Weight Balance"],
+                        "tier2" : ["Increased Caliber Rounds", "Floating Barrel", "Expanded Ammo Bags"],
+                        "tier3" : ["Super Blowthrough Rounds", "Explosive Rounds", "Hollow-Point Bullets"],
+                        "tier4" : ["Expanded Ammo Bags", "High Velocity Rounds"],
+                        "tier5" : ["Dead-Eye", "Neurotoxin Coating"],
+                        "overclock" : ["Chain Hit", "Homebrew Powder", "Volatile Bullets", "Six Shooter", "Elephant Rounds", "Magic Bullets"]
+                    },
+                    "BRT7 Burst Fire Gun" : {
+                        "tier1" : ["High Velocity Rounds", "Floating Barrel", "Blowthrough Rounds"],
+                        "tier2" : ["Recoil Dampener", "Quickfire Ejector", "Disabled Safety"],
+                        "tier3" : ["High Capacity Magazine", "Increased Caliber Rounds"],
+                        "tier4" : ["Hardened Rounds", "Expanded Ammo Bags", "Hollow-Point Bullets"],
+                        "tier5" : ["Burst Stun", "Longer Burst"],
+                        "overclock" : ["Composite Casings", "Full Chamber Seal", "Compact Mags", "Experimental Rounds", "Electro Minelets", "Micro Flechettes", "Lead Spray"]
+                    }, 
+                    "ArmsKore Coil Gun" : {
+                        "tier1" : ["Extra Coil", "Larger Battery", "Optimised Magnetic Circuit"],
+                        "tier2" : ["Overcharger", "Controlled Magnetic Flow", "Improved Feeding System"],
+                        "tier3" : ["Concussive Shockwave", "Fear Trajectory"],
+                        "tier4" : ["Defence Enhancement", "Shockwave"],
+                        "tier5" : ["Necro-Thermal Catalyst", "Dilated Injector System", "Electric Trail"],
+                        "overclock" : ["Ultra-Magnetic Coils", "Backfeeding Module", "Re-atomizer", "The Mole", "Hellfire", "Triple-Tech Chambers"]
+                    }
+                },
+                "grenade" : ["Cluster Grenade", "Incendiary Grenade", "Sticky Grenade"]
+            },
+            "scout" : {
+                "primary" : {
+                    "Deepcore GK2" : [],
+                    "M1000 Classic" : [],
+                    "DRAK-25 Plasma Carbine" : []
+                },
+                "secondary" : ["Jury-Rigged Boomstick", "Zhukov NUK17", "Nishanka Boltshark X-80"],
+                "grenade" : ["Inhibitor-Field Generator", "Cryo Grenade", "Pheromone Canister"]
+            },
+            "driller" : {
+                "primary" : {
+                    "CRSPR Flamethrower" : [],
+                    "Cryo Cannon" : [],
+                    "Corrosive Sludge Pump" : []
+                },
+                "secondary" : ["Subata 120", "Experimental Plasma Charger", "Colette Wave Cooker"],
+                "grenade" : ["Impact Axe", "High Explosive Grenade", "Neurotoxin Grenade"]
+            },
+            "engineer" : {
+                "primary" : {
+                    "'Warthog' Auto 210" : [],
+                    "'Stubby' Voltaic SMG" : [],
+                    "LOK-1 Smart Rifle" : []
+                },
+                "secondary" : ["Deepcore 40mm PGL", "Breach Cutter", "Shard Diffractor"],
+                "grenade" : ["Plasma Burster", "L.U.R.E.", "Proximity Mine"]
+            }
+        }
+    }]
+}

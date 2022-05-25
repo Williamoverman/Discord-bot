@@ -8,26 +8,35 @@ module.exports = {
 	async execute(interaction, message) {
 		let msg = message.toLowerCase();
 		if (message === drgData['data']['class']['gunner']) {
+			//Storing the build im randomizing in this array
 			let rndBuild = [];
 			//primary randomizer
 			let rndPrimary = drgData['data']['class'][msg]['primary'][Math.floor(Math.random() * drgData['data']['class'][msg]['primary'].length)];
 			rndBuild.push(rndPrimary);
 
-			let rndPrimaryModification = [];
-			for (let i = 1; i < drgData['data']['class'][msg]['primary'][rndPrimary]['modifications'].length; i++) {
-				rndPrimaryModification = 'tier' + i;
-				rndPrimaryModification['tier' + i] = drgData['data']['class'][msg]['primary'][rndPrimary]['modifications']['tier' + i][Math.floor(Math.random() * drgData['data']['class'][msg]['primary'][rndPrimary]['modifications']['tier' + i].length)];
-				rndBuild.push(rndPrimaryModification['tier' + i]);
-			}
+			//random primary modifications
+			RandomWeapon(msg, 'primary', rndPrimary);
 			
 			let rndPrimaryOverclock = drgData['data']['class'][msg]['primary'][rndPrimary]['overclock'][Math.floor(Math.random() * drgData['data']['class'][msg]['primary'][rndPrimary]['overclock'])];
 			rndBuild.push(rndPrimaryOverclock);
 
 			//secondary randomizer
 			let rndSecondary = drgData['data']['class'][msg]['secondary'][Math.floor(Math.random() * drgData['data']['class'][msg]['secondary'].length)];
+			rndBuild.push(rndSecondary);
+
+			//random secondary modifications
+			RandomWeapon(msg, 'secondary', rndSecondary);
 		} else {
 			await interaction.reply('Not a valid DRG class!');
 		}
-		await interaction.reply('Pong!');
+		await interaction.reply('build');
 	},
 };
+
+function RandomWeapon(msg, gunType, rndWeapon) {
+	for (let i = 1; i < drgData['data']['class'][msg][gunType][rndWeapon]['modifications'].length; i++) {
+		let rndWeaponModification = 'tier' + i;
+		rndWeaponModification['tier' + i] = drgData['data']['class'][msg][gunType][rndWeapon]['modifications']['tier' + i][Math.floor(Math.random() * drgData['data']['class'][msg][gunType][rndWeapon]['modifications']['tier' + i].length)];
+		rndBuild.push(rndWeaponModification['tier' + i]);
+	}
+}

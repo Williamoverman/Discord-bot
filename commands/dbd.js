@@ -63,11 +63,17 @@ module.exports = {
 
             for (let i = 0; i < dbdKillers.length; i++) {
 
-                if (dbdKillers[i]['name'] == killerName) {
+                if (dbdKillers[i]['name'] == killerName || dbdKillers[i]['name'].toLowerCase() == killerName) {
         
                     let killer = new GetKiller(dbdKillers[i]['name'], dbdKillers[i]['gender'], dbdKillers[i]['nationality'], dbdKillers[i]['realm'], dbdKillers[i]['power'], dbdKillers[i]['weapon'],
                     dbdKillers[i]['speed'], dbdKillers[i]['terror_radius'], dbdKillers[i]['height'], dbdKillers[i]['difficulty'], dbdKillers[i]['overview'], dbdKillers[i]['dlc'], dbdKillers[i]['icon']['portrait'],
                     dbdKillers[i]['icon']['preview_portrait'], dbdKillers[i]['icon']['shop_background'], dbdKillers[i]['perks'][0], dbdKillers[i]['perks'][1], dbdKillers[i]['perks'][2]);
+
+                    let killerDCEmbed = killerEmbed(killer.killerName, killer.killerGender, killer.killerNationality, killer.killerRealm, killer.killerPower, killer.killerWeapon, killer.killerSpeed, killer.killerTerrorRadius,killer.killerHeight,
+                        killer.killerDifficulty, killer.killerOverview, killer.killerDLC, killer.killerPortrait, killer.killerPreviewPortrait, killer.killerPerk0, killer.killerPerk1, killer.killerPerk2);
+
+                    message = { embeds: [killerDCEmbed] };
+                    break;
 
                 } else {
         
@@ -134,6 +140,9 @@ function getRandomPerksSurvivor() {
 }
 
 function survivorEmbed(survivorName, survivorGender, survivorRole, survivorNationality, survivorOverview, survivorDifficulty, survivorDLC, survivorPortrait, survivorPreviewPortrait, survivorPerk0, survivorPerk1, survivorPerk2) {
+    survivorPerk0 = survivorPerk0.replace(/([A-Z])/g, ' $1').trim()
+    survivorPerk1 = survivorPerk1.replace(/([A-Z])/g, ' $1').trim()
+    survivorPerk2 = survivorPerk2.replace(/([A-Z])/g, ' $1').trim()
     let survivorEmbed = new MessageEmbed()
 	.setColor('#424549')
 	.setTitle(survivorName)
@@ -157,4 +166,43 @@ function survivorEmbed(survivorName, survivorGender, survivorRole, survivorNatio
 	.setFooter({ text: `How about you play ${survivorName} next game?` });
 
     return survivorEmbed;
+}
+
+function killerEmbed(killerName, killerGender, killerNationality, killerRealm, killerPower, killerWeapon, killerSpeed, killerTerrorRadius, killerHeight, killerDifficulty, killerOverview, killerDLC, killerPortrait,
+    killerPreviewPortrait, killerPerk0, killerPerk1, killerPerk2) {
+    if (killerRealm == "") {
+        killerRealm = "No realm";
+    }
+    killerPerk0 = killerPerk0.replace(/([A-Z])/g, ' $1').trim()
+    killerPerk1 = killerPerk1.replace(/([A-Z])/g, ' $1').trim()
+    killerPerk2 = killerPerk2.replace(/([A-Z])/g, ' $1').trim()
+
+    let killerEmbed = new MessageEmbed()
+	.setColor('#424549')
+	.setTitle(killerName)
+	.setAuthor({ name: 'Moosike#5116' })
+	.setDescription(killerOverview)
+	.setThumbnail(killerPortrait)
+	.addFields(
+        { name: 'DLC', value: `${killerDLC}`, inline: true },
+        { name: 'Difficulty', value: `${killerDifficulty}`, inline: true },
+		{ name: '\u200B', value: '\u200B' },
+		{ name: `${killerName}'s gender`, value: `${killerGender}`, inline: true },
+        { name: `${killerName}'s power`, value: `${killerPower}`, inline: true },
+        { name: `${killerName}'s realm`, value: `${killerRealm}`, inline: true },
+		{ name: `${killerName}'s nationality`, value: `${killerNationality}`, inline: true },
+        { name: `${killerName}'s weapon`, value: `${killerWeapon}`, inline: true },
+        { name: `${killerName}'s speed`, value: `${killerSpeed}`, inline: true },
+        { name: `${killerName}'s terror radius range`, value: `${killerTerrorRadius}`, inline: true },
+        { name: `${killerName}'s height`, value: `${killerHeight}`, inline: true },
+        { name: '\u200B', value: '\u200B' },
+        { name: `${killerName}'s first teachable perk`, value: `${killerPerk0}`, inline: true },
+        { name: `${killerName}'s second teachable perk`, value: `${killerPerk1}`, inline: true },
+        { name: `${killerName}'s last teachable perk`, value: `${killerPerk2}`, inline: true },
+	)
+	.setImage(killerPreviewPortrait)
+	.setTimestamp()
+	.setFooter({ text: `How about you play ${killerName} next game?` });
+
+    return killerEmbed;
 }

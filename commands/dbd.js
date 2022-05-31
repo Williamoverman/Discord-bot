@@ -1,125 +1,127 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const dbdPerks = require('https://dbd-api.herokuapp.com/perks?lang=en');
-const dbdKillers = require('https://dbd-api.herokuapp.com/killers');
-const dbdSurvivors = require('https://dbd-api.herokuapp.com/survivors');
+const { MessageEmbed } = require('discord.js');
+const fetch = require('node-fetch');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('dbd')
         .setDescription('dbd')
         .addSubcommand(subcommand =>
-            subcommand.setName('killerInfo')
+            subcommand
+                .setName('killerinfo')
                 .setDescription('info over een killer')
                 .addStringOption(option => option.setName('killer').setDescription('The killer you want info about').setRequired(true)))
         .addSubcommand(subcommand =>
-            subcommand.setName('survivorInfo')
+            subcommand
+                .setName('survivorinfo')
                 .setDescription('info over een survivor')
                 .addStringOption(option => option.setName('survivor').setDescription('The survivor you want info about').setRequired(true)))
         .addSubcommand(subcommand =>
-            subcommand.setName('randomPerksKiller')
+            subcommand
+                .setName('randomperkskiller')
                 .setDescription('random perks voor een killer')
                 .addStringOption(option => option.setName('killer').setDescription('The killer you want a random build for').setRequired(true)))
         .addSubcommand(subcommand => 
-            subcommand.setName('randomPerksSurvivor')
+            subcommand
+                .setName('randomperkssurvivor')
                 .setDescription('random perks voor een survivor')
                 .addStringOption(option => option.setName('survivor').setDescription('The survivor you want a random build for').setRequired(true))),
     async execute(interaction) {
-        try {
 
-            if (interaction.options.getSubcommand() === 'survivorInfo') {
-                let survivor = interaction.option.getString('survivor');
-                let survivorInfo = getSurvivorInfo(survivor);
+        let message = "";
+
+        if (interaction.options.getSubcommand() === 'survivorinfo') {
+            const dbdSurvivors = await fetch('https://dbd-api.herokuapp.com/survivors').then(response => response.json());
+            let survivorName = interaction.options.getString('survivor');
+
+            for (let i = 0; i < dbdSurvivors.length; i++) {
+
+                if (dbdSurvivors[i]['name'] == survivorName || dbdSurvivors[i]['name'].toLowerCase() == survivorName) {
+        
+                    let survivor = new GetSurvivor(dbdSurvivors[i]['name'], dbdSurvivors[i]['gender'], dbdSurvivors[i]['role'], dbdSurvivors[i]['nationality'], dbdSurvivors[i]['overview'], dbdSurvivors[i]['difficulty'],
+                    dbdSurvivors[i]['dlc'], dbdSurvivors[i]['icon']['portrait'], dbdSurvivors[i]['icon']['preview_portrait'], dbdSurvivors[i]['icon']['shop_background'], dbdSurvivors[i]['perks'][0], dbdSurvivors[i]['perks'][1],
+                    dbdSurvivors[i]['perks'][2]);
+
+                    let survivorDCEmbed = survivorEmbed(survivor.survivorName, survivor.survivorGender, survivor.survivorRole, survivor.survivorNationality, survivor.survivorOverview, survivor.survivorDifficulty, survivor.survivorDLC,
+                        survivor.survivorPortrait, survivor.survivorPreviewPortrait, survivor.survivorPerk0, survivor.survivorPerk1, survivor.survivorPerk2);
+
+                    message = { embeds: [survivorDCEmbed] };
+                    break;
+
+                } else {
+
+                    message = 'Survivor bestaat niet!';
+
+                }
+
             }
+        }
 
-            if (interaction.options.getSubcommand() === 'killerInfo') {
-                let killer = interaction.option.getString('killer');
-                let killerInfo = getKillerInfo(msg);
+        if (interaction.options.getSubcommand() === 'killerinfo') {
+            const dbdKillers = await fetch('https://dbd-api.herokuapp.com/killers').then(response => response.json());
+            let killerName = interaction.options.getString('killer');
+
+            for (let i = 0; i < dbdKillers.length; i++) {
+
+                if (dbdKillers[i]['name'] == killerName) {
+        
+                    let killer = new GetKiller(dbdKillers[i]['name'], dbdKillers[i]['gender'], dbdKillers[i]['nationality'], dbdKillers[i]['realm'], dbdKillers[i]['power'], dbdKillers[i]['weapon'],
+                    dbdKillers[i]['speed'], dbdKillers[i]['terror_radius'], dbdKillers[i]['height'], dbdKillers[i]['difficulty'], dbdKillers[i]['overview'], dbdKillers[i]['dlc'], dbdKillers[i]['icon']['portrait'],
+                    dbdKillers[i]['icon']['preview_portrait'], dbdKillers[i]['icon']['shop_background'], dbdKillers[i]['perks'][0], dbdKillers[i]['perks'][1], dbdKillers[i]['perks'][2]);
+
+                } else {
+        
+                    message = 'Killer bestaat niet!';
+        
+                }
             }
-
         }
-        catch (error) {
 
-            await interaction.reply('Killer or survivor niet herkend');
-            console.log(error);
+        await interaction.reply(message);
 
-        }
     }
 }
 
-function getKillerInfo(killerName) {
 
-    for (let i = 0; i < dbdKillers.length; i++) {
+function GetKiller(killerName, killerGender, killerNationality, killerRealm, killerPower, killerWeapon, killerSpeed, killerTerrorRadius, killerHeight, killerDifficulty, killerOverview, killerDLC, killerPortrait,
+    killerPreviewPortrait, killerShopbackground, killerPerk0, killerPerk1, killerPerk2) {
 
-        if (dbdKillers[i]['name'] == killerName) {
-
-            let killerObj = new Object();
-
-            killerObj = {
-                killerName : dbdKillers[i]['name'],
-                killerGender : dbdKillers[i]['gender'],
-                killerNationality : dbdKillers[i]['nationality'],
-                killerRealm : dbdKillers[i]['realm'],
-                killerPower : dbdKillers[i]['power'],
-                killerWeapon : dbdKillers[i]['weapon'],
-                killerSpeed : dbdKillers[i]['speed'],
-                killerTerrorRadius : dbdKillers[i]['terror_radius'],
-                killerHeight : dbdKillers[i]['height'],
-                killerDifficulty : dbdKillers[i]['difficulty'],
-                killerOverview : dbdKillers[i]['overview'],
-                killerDLC : dbdKillers[i]['dlc'],
-                killerPortrait : dbdKillers[i]['icon']['portrait'],
-                killerPreviewPortrait : dbdKillers[i]['icon']['preview_portrait'],
-                killerShopbackground : dbdKillers[i]['icon']['shop_background'],
-                killerPerk0 : dbdKillers[i]['perks'][0],
-                killerPerk1 : dbdKillers[i]['perks'][1],
-                killerPerk2 : dbdKillers[i]['perks'][2]
-            };
-
-            return killerObj;
-
-        } else {
-
-            return await interaction.reply('Not a valid killer!');
-
-        }
-
-    }
+        this.killerName = killerName;
+        this.killerGender = killerGender;
+        this.killerNationality = killerNationality;
+        this.killerRealm = killerRealm;
+        this.killerPower = killerPower;
+        this.killerWeapon = killerWeapon;
+        this.killerSpeed = killerSpeed;
+        this.killerTerrorRadius = killerTerrorRadius;
+        this.killerHeight = killerHeight;
+        this.killerDifficulty = killerDifficulty;
+        this.killerOverview = killerOverview;
+        this.killerDLC = killerDLC;
+        this.killerPortrait = killerPortrait;
+        this.killerPreviewPortrait = killerPreviewPortrait;
+        this.killerShopbackground = killerShopbackground;
+        this.killerPerk0 = killerPerk0;
+        this.killerPerk1 = killerPerk1;
+        this.killerPerk2 = killerPerk2;
 
 }
 
-function getSurvivorInfo(survivorName) {
-
-    for (let i = 0; i < dbdSurvivors.length; i++) {
-
-        if (dbdSurvivors[i]['name'] == survivorName) {
-
-            let survivorObj = new Object();
-
-            survivorObj = {
-                survivorName: dbdSurvivors[i]['name'],
-                survivorGender : dbdSurvivors[i]['gender'],
-                survivorRole : dbdSurvivors[i]['role'],
-                survivorNationality : dbdSurvivors[i]['nationality'],
-                survivorOverview : dbdSurvivors[i]['overview'],
-                survivorDifficulty : dbdSurvivors[i]['difficulty'],
-                survivorDLC : dbdSurvivors[i]['dlc'],
-                survivorPortrait : dbdSurvivors[i]['icon']['portrait'],
-                survivorPreviewPortrait : dbdSurvivors[i]['icon']['preview_portrait'],
-                survivorShopbackground : dbdSurvivors[i]['icon']['shop_background'],
-                survivorPerk0 : dbdSurvivors[i]['perks'][0],
-                survivorPerk1 : dbdSurvivors[i]['perks'][1],
-                survivorPerk2 : dbdSurvivors[i]['perks'][2]
-            };
-
-            return survivorObj;
-
-        } else {
-
-            return await interaction.reply('Not a valid survivor!');
-
-        }
-
-    }
+function GetSurvivor(survivorName, survivorGender, survivorRole, survivorNationality, survivorOverview, survivorDifficulty, survivorDLC, survivorPortrait, survivorPreviewPortrait, survivorShopbackground, survivorPerk0, survivorPerk1, survivorPerk2) {
+    
+        this.survivorName = survivorName;
+        this.survivorGender = survivorGender;
+        this.survivorRole = survivorRole;
+        this.survivorNationality = survivorNationality;
+        this.survivorOverview = survivorOverview;
+        this.survivorDifficulty = survivorDifficulty;
+        this.survivorDLC = survivorDLC;
+        this.survivorPortrait = survivorPortrait;
+        this.survivorPreviewPortrait = survivorPreviewPortrait;
+        this.survivorShopbackground = survivorShopbackground;
+        this.survivorPerk0 = survivorPerk0;
+        this.survivorPerk1 = survivorPerk1;
+        this.survivorPerk2 = survivorPerk2;
 
 }
 
@@ -129,4 +131,30 @@ function getRandomPerksKiller() {
 
 function getRandomPerksSurvivor() {
 
+}
+
+function survivorEmbed(survivorName, survivorGender, survivorRole, survivorNationality, survivorOverview, survivorDifficulty, survivorDLC, survivorPortrait, survivorPreviewPortrait, survivorPerk0, survivorPerk1, survivorPerk2) {
+    let survivorEmbed = new MessageEmbed()
+	.setColor('#424549')
+	.setTitle(survivorName)
+	.setAuthor({ name: 'Moosike#5116' })
+	.setDescription(survivorOverview)
+	.setThumbnail(survivorPortrait)
+	.addFields(
+        { name: 'DLC', value: `${survivorDLC}`, inline: true },
+        { name: 'Difficulty', value: `${survivorDifficulty}`, inline: true },
+		{ name: '\u200B', value: '\u200B' },
+		{ name: `${survivorName}'s gender`, value: `${survivorGender}`, inline: true },
+        { name: `${survivorName}'s role`, value: `${survivorRole}`, inline: true },
+		{ name: `${survivorName}'s nationality`, value: `${survivorNationality}`, inline: true },
+        { name: '\u200B', value: '\u200B' },
+        { name: `${survivorName}'s first teachable perk`, value: `${survivorPerk0}`, inline: true },
+        { name: `${survivorName}'s second teachable perk`, value: `${survivorPerk1}`, inline: true },
+        { name: `${survivorName}'s last teachable perk`, value: `${survivorPerk2}`, inline: true },
+	)
+	.setImage(survivorPreviewPortrait)
+	.setTimestamp()
+	.setFooter({ text: `How about you play ${survivorName} next game?` });
+
+    return survivorEmbed;
 }

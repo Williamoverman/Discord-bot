@@ -83,11 +83,34 @@ module.exports = {
             }
         }
 
+        if (interaction.options.getSubcommand() === 'randomperkssurvivor' || interaction.options.getSubcommand() === 'randomperkskiller') {
+            const dbdPerks = await fetch('https://dbd-api.herokuapp.com/perks?lang=en').then(response => response.json());
+
+            if (interaction.options.getSubcommand() === 'randomperkssurvivor') {
+                let survivorPerks = getPerks('Survivor');
+                let letFirstPerkEmbed = perksEmbed(survivorPerks[0]['perk_name'], survivorPerks[0]['icon']);
+                let letSecondPerkEmbed = perksEmbed(survivorPerks[1]['perk_name'], survivorPerks[1]['icon']);
+                let letThirdPerkEmbed = perksEmbed(survivorPerks[2]['perk_name'], survivorPerks[2]['icon']);
+                let letLastPerkEmbed = perksEmbed(survivorPerks[3]['perk_name'], survivorPerks[3]['icon']);
+
+                message = { embeds: [letFirstPerkEmbed, letSecondPerkEmbed, letThirdPerkEmbed, letLastPerkEmbed] };
+            }
+
+            if (interaction.options.getSubcommand() === 'randomperkskiller') {
+                let killerPerks = getPerks('Killer');
+                let letFirstPerkEmbed = perksEmbed(killerPerks[0]['perk_name'], killerPerks[0]['icon']);
+                let letSecondPerkEmbed = perksEmbed(killerPerks[1]['perk_name'], killerPerks[1]['icon']);
+                let letThirdPerkEmbed = perksEmbed(killerPerks[2]['perk_name'], killerPerks[2]['icon']);
+                let letLastPerkEmbed = perksEmbed(killerPerks[3]['perk_name'], killerPerks[3]['icon']);
+
+                message = { embeds: [letFirstPerkEmbed, letSecondPerkEmbed, letThirdPerkEmbed, letLastPerkEmbed] };
+            }
+        }
+
         await interaction.reply(message);
 
     }
 }
-
 
 function GetKiller(killerName, killerGender, killerNationality, killerRealm, killerPower, killerWeapon, killerSpeed, killerTerrorRadius, killerHeight, killerDifficulty, killerOverview, killerDLC, killerPortrait,
     killerPreviewPortrait, killerShopbackground, killerPerk0, killerPerk1, killerPerk2) {
@@ -131,13 +154,18 @@ function GetSurvivor(survivorName, survivorGender, survivorRole, survivorNationa
 
 }
 
-function getRandomPerksKiller() {
-
-}
-
-function getRandomPerksSurvivor() {
-
-}
+function getPerks(role) {
+    let perks = [];
+    let fourRandomPerks = []
+    for (let i = 0; i < dbdPerks.length; i++) {
+        if (dbdPerks[i]['role'] == role) {
+            perks.push(dbdPerks[i]);
+        }
+    }
+    const shuffled = [...perks].sort(() => 0.5 - Math.random());
+    fourRandomPerks = shuffled.slice(0, 4);
+    return fourRandomPerks;
+}           
 
 function survivorEmbed(survivorName, survivorGender, survivorRole, survivorNationality, survivorOverview, survivorDifficulty, survivorDLC, survivorPortrait, survivorPreviewPortrait, survivorPerk0, survivorPerk1, survivorPerk2) {
     survivorPerk0 = survivorPerk0.replace(/([A-Z])/g, ' $1').trim()
@@ -205,4 +233,15 @@ function killerEmbed(killerName, killerGender, killerNationality, killerRealm, k
 	.setFooter({ text: `How about you play ${killerName} next game?` });
 
     return killerEmbed;
+}
+
+function perksEmbed(perk, icon) {
+    let perkEmbed = new MessageEmbed()
+    .setColor('#424549')
+	.setTitle(perk)
+	.setAuthor({ name: 'Moosike#5116' })
+	.setImage(icon)
+	.setTimestamp();
+    
+    return perkEmbed;
 }

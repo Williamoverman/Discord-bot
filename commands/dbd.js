@@ -19,13 +19,11 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('randomperkskiller')
-                .setDescription('random perks voor een killer')
-                .addStringOption(option => option.setName('killer').setDescription('The killer you want a random build for').setRequired(true)))
+                .setDescription('random perks voor een killer'))
         .addSubcommand(subcommand => 
             subcommand
                 .setName('randomperkssurvivor')
-                .setDescription('random perks voor een survivor')
-                .addStringOption(option => option.setName('survivor').setDescription('The survivor you want a random build for').setRequired(true))),
+                .setDescription('random perks voor een survivor')),
     async execute(interaction) {
 
         let message = "";
@@ -85,25 +83,30 @@ module.exports = {
 
         if (interaction.options.getSubcommand() === 'randomperkssurvivor' || interaction.options.getSubcommand() === 'randomperkskiller') {
             const dbdPerks = await fetch('https://dbd-api.herokuapp.com/perks?lang=en').then(response => response.json());
+            let id = Math.floor(Math.random() * 50);
 
             if (interaction.options.getSubcommand() === 'randomperkssurvivor') {
-                let survivorPerks = getPerks('Survivor');
-                let letFirstPerkEmbed = perksEmbed(survivorPerks[0]['perk_name'], survivorPerks[0]['icon']);
-                let letSecondPerkEmbed = perksEmbed(survivorPerks[1]['perk_name'], survivorPerks[1]['icon']);
-                let letThirdPerkEmbed = perksEmbed(survivorPerks[2]['perk_name'], survivorPerks[2]['icon']);
-                let letLastPerkEmbed = perksEmbed(survivorPerks[3]['perk_name'], survivorPerks[3]['icon']);
+                let survivorPerks = getPerks(dbdPerks, 'Survivor');
+                let letFirstPerkEmbed = perksEmbed(survivorPerks[0]['perk_name'], survivorPerks[0]['icon'], id);
+                let letSecondPerkEmbed = perksEmbed(survivorPerks[1]['perk_name'], survivorPerks[1]['icon'], id);
+                let letThirdPerkEmbed = perksEmbed(survivorPerks[2]['perk_name'], survivorPerks[2]['icon'], id);
+                let letLastPerkEmbed = perksEmbed(survivorPerks[3]['perk_name'], survivorPerks[3]['icon'], id);
 
                 message = { embeds: [letFirstPerkEmbed, letSecondPerkEmbed, letThirdPerkEmbed, letLastPerkEmbed] };
             }
 
             if (interaction.options.getSubcommand() === 'randomperkskiller') {
-                let killerPerks = getPerks('Killer');
-                let letFirstPerkEmbed = perksEmbed(killerPerks[0]['perk_name'], killerPerks[0]['icon']);
-                let letSecondPerkEmbed = perksEmbed(killerPerks[1]['perk_name'], killerPerks[1]['icon']);
-                let letThirdPerkEmbed = perksEmbed(killerPerks[2]['perk_name'], killerPerks[2]['icon']);
-                let letLastPerkEmbed = perksEmbed(killerPerks[3]['perk_name'], killerPerks[3]['icon']);
+                const dbdKillers = await fetch('https://dbd-api.herokuapp.com/killers').then(response => response.json());
 
-                message = { embeds: [letFirstPerkEmbed, letSecondPerkEmbed, letThirdPerkEmbed, letLastPerkEmbed] };
+                let killerPerks = getPerks(dbdPerks, 'Killer');
+                let killer = getKiller(dbdKillers);
+                let rndKillerEmbed = perksEmbed(killer['name'], killer['icon']['portrait'], id);
+                let letFirstPerkEmbed = perksEmbed(killerPerks[0]['perk_name'], killerPerks[0]['icon'], id);
+                let letSecondPerkEmbed = perksEmbed(killerPerks[1]['perk_name'], killerPerks[1]['icon'], id);
+                let letThirdPerkEmbed = perksEmbed(killerPerks[2]['perk_name'], killerPerks[2]['icon'], id);
+                let letLastPerkEmbed = perksEmbed(killerPerks[3]['perk_name'], killerPerks[3]['icon'], id);
+
+                message = { embeds: [rndKillerEmbed, letFirstPerkEmbed, letSecondPerkEmbed, letThirdPerkEmbed, letLastPerkEmbed] };
             }
         }
 
@@ -154,18 +157,24 @@ function GetSurvivor(survivorName, survivorGender, survivorRole, survivorNationa
 
 }
 
-function getPerks(role) {
+function getPerks(dbdPerks, role) {
     let perks = [];
     let fourRandomPerks = []
     for (let i = 0; i < dbdPerks.length; i++) {
         if (dbdPerks[i]['role'] == role) {
-            perks.push(dbdPerks[i]);
+            perks[i] = dbdPerks[i];
         }
     }
     const shuffled = [...perks].sort(() => 0.5 - Math.random());
     fourRandomPerks = shuffled.slice(0, 4);
     return fourRandomPerks;
-}           
+}   
+
+function getKiller(dbdKillers) {
+    let killer = [];
+    killer = dbdKillers[Math.floor(Math.random() * dbdKillers.length)]
+    return killer;
+}
 
 function survivorEmbed(survivorName, survivorGender, survivorRole, survivorNationality, survivorOverview, survivorDifficulty, survivorDLC, survivorPortrait, survivorPreviewPortrait, survivorPerk0, survivorPerk1, survivorPerk2) {
     survivorPerk0 = survivorPerk0.replace(/([A-Z])/g, ' $1').trim()
@@ -235,13 +244,13 @@ function killerEmbed(killerName, killerGender, killerNationality, killerRealm, k
     return killerEmbed;
 }
 
-function perksEmbed(perk, icon) {
+function perksEmbed(perk, icon, id) {
     let perkEmbed = new MessageEmbed()
     .setColor('#424549')
 	.setTitle(perk)
+    .setThumbnail(icon)
 	.setAuthor({ name: 'Moosike#5116' })
-	.setImage(icon)
-	.setTimestamp();
-    
+	.setTimestamp()
+    .setFooter({ text: `Build ID : ${id}` });
     return perkEmbed;
 }
